@@ -54,24 +54,21 @@ function inset() {
 async function queryUser(req, res, next) {
     let cn = db.getConnection()
     
-
+    console.log(req.type)
     cn.query(`SELECT * FROM usuarios WHERE nombre='${req.body.nombre}'`, function(err, result, fields) { 
         if(err) throw err;
         if(result.length > 0) {
             req.success = "EL NOMBRE DE USUARIO YA ESTA EN USO"
             req.type = types.warning
-            throw new Error("AAAA");
+            next()
+        } else {
+            cn.query(`INSERT INTO usuarios(nombre, contra) VALUES('${req.body.nombre}', '${req.body.pswd1}')`)
+            req.success = "SE A REGISTRADO CON EXITO"
+            req.type = types.success;
+            next()
         }
-    }).then(()=> {
-        cn.query(`INSERT INTO usuarios(nombre, contra) VALUES('${req.body.nombre}', '${req.body.pswd1}')`)
-    }).catch((e)=> {
-        return next()
     })
-
     
-    req.success = "SE A REGISTRADO CON EXITO"
-    req.type = types.success;
-    next()
 }
 
 app.post('/registrar', checkBoxes, queryUser,(req, res) => {
