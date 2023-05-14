@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/normalize.css">
+  <link rel="stylesheet" href="/index.css">
+  <title>Document</title>
+</head>
+<body>
+  
+  <header id="header">
+    <p>PAGINA DE PRUEBA</p>
+  </header>
+
+
+<div class="section">
+  <form id="inicioSesion" name="formIng" method="POST" action="/mainpage">
+    <div id="texto">
+      <input type="text" id="userName" class="dentro" placeholder="Usuario" name="nombre">
+      <input type="password" id="userPassword" class="dentro" placeholder="Contraseña" name="contrasenia">
+    </div>
+    <div id="buttons">
+      <button id="ingresar" class="button" type="submit">
+        Ingresar
+      </button>
+    </div >
+  </form>
+  <form action="/registrar" method="get">
+    <button id="registrar" class="button" type="submit">
+        Registrar
+    </button>
+  </form>
+</div>
+
+  <footer id="footer">
+    <section>
+      <ul>
+        <li>
+          Derechos reservados
+        </li>
+        <li>
+          Informacion
+        </li>
+        <li>
+          Tipo de licencia
+        </li>
+      </ul>
+    </section>
+  </footer>
+</body>
+</html>

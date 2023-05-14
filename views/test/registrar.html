@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../public/normalize.css">
+    <link rel="stylesheet" href="../../public/registro.css">
+    <link rel="stylesheet" href="../../public/alerts.css">
+    <title>Registro</title>
+</head>
+
+<body>
+
+    <header class="header">
+        <p class="titulo">
+            Pagina de registro
+        </p>
+    </header>
+
+    <div id="todo">
+
+    
+
+    <form id="cuerpo" action="/registrar" method="POST">
+        <div id="registroContenido">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre text" name="nombre" class="text">
+            <label for="pswd1">Contraseña</label>
+            <input type="password" name="pswd1" id="pswd1" class="text">
+            <label for="pswd2">Repite la contraseña</label>
+            <input type="password" name="pswd2" id="pswd2" class="text">
+            <label for="profileImage">Imagen de perfil</label>
+            <input type="file" name="profileImage" class="profileImage" id="profileImage">
+        <div id="divBtnReg">
+            <button id="reg">
+                Regresar
+            </button>
+            <button class="btnReg" type="submit">
+                Registrar
+            </button>
+        </div>
+        </div>
+        <div class="alert alert-success" role="alert">asieessss</div>
+    </form>
+</div>
+
+    <footer id="final">
+
+    </footer>
+</body>
+
+</html>

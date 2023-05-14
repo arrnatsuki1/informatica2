@@ -1,0 +1,15 @@
+.alert {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    padding: 1rem 1rem 1rem 1rem;
+    border-radius: 13px;
+    font-style: italic;
+}
+
+.alert-warning {
+    background-color: red;
+}
+
+.alert-success {
+    background-color: greenyellow;
+}
