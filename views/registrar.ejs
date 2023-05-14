@@ -34,9 +34,6 @@
             <label for="profileImage">Imagen de perfil</label>
             <input type="file" name="profileImage" class="profileImage" id="profileImage">
         <div id="divBtnReg">
-            <button id="reg">
-                Regresar
-            </button>
             <button class="btnReg" type="submit">
                 Registrar
             </button>
@@ -49,6 +46,11 @@
                 <div class="alert alert-success" role="alert"> <%= success %> </div> 
             <% } %>
         <% } %>
+    </form>
+    <form action="/" method="get">
+        <button id="reg">
+            Regresar
+        </button>
     </form>
 </div>
 

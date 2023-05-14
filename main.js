@@ -38,46 +38,55 @@ function checkBoxes(req, res, next) {
     if(nombre === "" || pswd1 === "" || pswd2 === "") {
         req.success = 'no debe de haber campos vacios'
         req.type = types.warning
-        return next()
+        next()
     } else if(pswd1 != pswd2) {
         req.success = 'las contraseñas no coinciden'
         req.type = types.warning
+        next()
     }
-   
     next()
-}
-
-function inset() {
-
 }
 
 async function queryUser(req, res, next) {
     let cn = db.getConnection()
-    
-    console.log(req.type)
-    cn.query(`SELECT * FROM usuarios WHERE nombre='${req.body.nombre}'`, function(err, result, fields) { 
+
+    if(req.type === types.warning) {
+        return next()
+    }
+
+    const querySelect = `SELECT * FROM usuarios WHERE nombre='${req.body.nombre}'`
+
+    const queryInsert = `INSERT INTO usuarios(nombre, contra) VALUES('${req.body.nombre}', '${req.body.pswd1}')`
+
+    cn.query(querySelect, function(err, result, fields) { 
         if(err) throw err;
         if(result.length > 0) {
             req.success = "EL NOMBRE DE USUARIO YA ESTA EN USO"
             req.type = types.warning
             next()
         } else {
-            cn.query(`INSERT INTO usuarios(nombre, contra) VALUES('${req.body.nombre}', '${req.body.pswd1}')`)
+            cn.query(queryInsert)
             req.success = "SE A REGISTRADO CON EXITO"
             req.type = types.success;
             next()
         }
     })
-    
 }
 
 app.post('/registrar', checkBoxes, queryUser,(req, res) => {
+
+
     res.render("registrar", {success: req.success, type: req.type})
+
 })
 
 app.get('/registrar', (req, res) => {
     res.render("registrar", {type: types.none})
 })
 
+app.post('/login', (req, res) => {
+    let nom = req.body.nombre;
+    let pswd = req.body.contra;
+})
 
-app.listen(80)
+app.listen(443)
