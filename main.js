@@ -2,8 +2,12 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const mysql = require("./connection.js")
+const dotenv = require('dotenv')
+dotenv.config()
 
-const db = new mysql("localhost", "root", "AACEF6E8D16F04BB", "informatica")
+console.log(process.env.DB_PASSWORD)
+
+const db = new mysql("localhost", "root", process.env.DB_PASSWORD, "informatica")
 
 
 //para poder leer las resuestas de las peticiones
