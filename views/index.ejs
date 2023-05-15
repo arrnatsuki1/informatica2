@@ -33,7 +33,13 @@
     </button>
   </form>
 </div>
-
+<% if(type != '') { %>
+  <% if(type === 'warning') {%>
+      <div class="alert alert-warning" role="alert"> <%= success %> </div>   
+  <% } else if(type === 'success') { %>
+      <div class="alert alert-success" role="alert"> <%= success %> </div> 
+  <% } %>
+<% } %>
   <footer id="footer">
     <section>
       <ul>

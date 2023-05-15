@@ -22,7 +22,9 @@ app.set('views', path.join(__dirname, 'views'))
 
 
 app.get('/', (req, res) => {
-    res.render("index")
+    res.render("index",{
+        type:types.none
+    })
 })
 
 
@@ -77,6 +79,43 @@ async function queryUser(req, res, next) {
     })
 }
 
+function validacion(req, res,next){ 
+    let nom = req.body.nombre
+    let pswd = req.body.contra
+
+    req.type = types.none
+
+    if (nom === "" || pswd === "") {
+        req.success = "No debe haber campos vacíos";
+        req.type = types.warning;
+        return next();
+      }
+      next();
+  }
+
+  async function iniciarSesion(req, res, next) {
+    let cn = db.getConnection();
+    if (req.type === types.warning) {
+      return next();
+    }
+    const inicioSesion = `SELECT * FROM usuarios WHERE nombre='${req.body.nombre}' AND contra='${req.body.contra}'`;
+  
+    cn.query(inicioSesion, function (err, result, fields) {
+      if (err) throw err;
+      if (result.length > 0) {
+        res.render("sesion", { nombre: req.body.nombre });
+      } else {
+        req.flash(
+          "error",
+          "Nombre de usuario o contraseña incorrectos"
+        );
+        return res.redirect("/login");
+      }
+    });
+  }
+
+
+
 app.post('/registrar', checkBoxes, queryUser,(req, res) => {
 
 
@@ -84,13 +123,21 @@ app.post('/registrar', checkBoxes, queryUser,(req, res) => {
 
 })
 
+app.post('/login',(req,res)=>{
+    let nom = req.body.nombre
+    let pswd = req.body.contra
+})
+
 app.get('/registrar', (req, res) => {
     res.render("registrar", {type: types.none})
 })
 
-app.post('/login', (req, res) => {
-    let nom = req.body.nombre;
-    let pswd = req.body.contra;
-})
+app.post("/mainpage", validacion, iniciarSesion, (req, res) => {
+    res.redirect("sesion", { success: req.success, type: req.type });
+  });
 
-app.listen(443)
+
+
+
+
+app.listen(8080)
