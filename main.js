@@ -2,11 +2,12 @@ const express = require("express")
 const app = express()
 const path = require("path")
 const mysql = require("./connection.js")
+const Chiper = require("./chiper.js")
 const dotenv = require('dotenv')
 dotenv.config()
 
 const db = new mysql("localhost", "root", process.env.DB_PASSWORD, "informatica")
-
+const cipher = new Chiper()
 
 //para poder leer las resuestas de las peticiones
 app.use(express.urlencoded({extended: false}))
@@ -54,13 +55,16 @@ function checkBoxes(req, res, next) {
 async function queryUser(req, res, next) {
     let cn = db.getConnection()
 
+    let nencriptado = req.body.nombre;
+    let cencriptada = cipher.encrypt(req.body.pswd1);
+
     if(req.type === types.warning) {
         return next()
     }
 
-    const querySelect = `SELECT * FROM usuarios WHERE nombre='${req.body.nombre}'`
+    const querySelect = `SELECT * FROM usuarios WHERE nombre='${nencriptado}'`
 
-    const queryInsert = `INSERT INTO usuarios(nombre, contra) VALUES('${req.body.nombre}', '${req.body.pswd1}')`
+    const queryInsert = `INSERT INTO usuarios(nombre, contra) VALUES('${nencriptado}', '${cencriptada}')`
 
     cn.query(querySelect, function(err, result, fields) { 
         if(err) throw err;
@@ -88,26 +92,29 @@ function validacion(req, res,next){
         req.type = types.warning;
         return next();
       }
-      next();
+      next()
   }
 
   async function iniciarSesion(req, res, next) {
     let cn = db.getConnection();
+
+    let ncontra = cipher.encrypt(req.body.contra)
+
     if (req.type === types.warning) {
       return next();
     }
-    const inicioSesion = `SELECT * FROM usuarios WHERE nombre='${req.body.nombre}' AND contra='${req.body.contra}'`;
+    const inicioSesion = `SELECT * FROM usuarios WHERE nombre='${req.body.nombre}' AND contra='${ncontra}'`;
   
     cn.query(inicioSesion, function (err, result, fields) {
       if (err) throw err;
       if (result.length > 0) {
-        res.render("sesion", { nombre: req.body.nombre });
+        req.type = types.success
+        req.success = 'INICIO DE SESION HECHO'
+        req.nombre = result[0].nombre
+        return next()
       } else {
-        req.flash(
-          "error",
-          "Nombre de usuario o contraseña incorrectos"
-        );
-        return res.redirect("/login");
+        req.type = types.warning
+        return next()
       }
     });
   }
@@ -116,26 +123,21 @@ function validacion(req, res,next){
 
 app.post('/registrar', checkBoxes, queryUser,(req, res) => {
 
-
     res.render("registrar", {success: req.success, type: req.type})
 
-})
-
-app.post('/login',(req,res)=>{
-    let nom = req.body.nombre
-    let pswd = req.body.contra
 })
 
 app.get('/registrar', (req, res) => {
     res.render("registrar", {type: types.none})
 })
 
-app.post("/mainpage", validacion, iniciarSesion, (req, res) => {
-    res.redirect("sesion", { success: req.success, type: req.type });
-  });
-
-
-
-
+app.post("/login", validacion, iniciarSesion, (req, res) => {
+  
+  if(req.type === types.warning) {
+    res.redirect('/')
+  } else {
+    res.render("sesion", { success: req.success, type: req.type, nombre: req.nombre });
+  }
+});
 
 app.listen(process.env.port)
