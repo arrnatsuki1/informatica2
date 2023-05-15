@@ -5,8 +5,6 @@ const mysql = require("./connection.js")
 const dotenv = require('dotenv')
 dotenv.config()
 
-console.log(process.env.DB_PASSWORD)
-
 const db = new mysql("localhost", "root", process.env.DB_PASSWORD, "informatica")
 
 
@@ -140,4 +138,4 @@ app.post("/mainpage", validacion, iniciarSesion, (req, res) => {
 
 
 
-app.listen(8080)
+app.listen(process.env.port)
